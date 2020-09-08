@@ -15,15 +15,12 @@ public class Main {
         String databaseUrlH2 = "jdbc:h2:./H2DataBase";
 
         // create single connection
-        ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrlH2, "admin", "admin");
+        ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrlSqlite);
+//        ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrlH2, "admin", "admin");
 
-        Dao<Account, String> accountDao = DaoManager.createDao(connectionSource,Account.class);
-        TableUtils.createTable(connectionSource, Account.class);
-
-        Account account = new Account();
-        account.setName("Jim Halsey Jr.");
-        account.setPassword("_secret_password");
-        accountDao.create(account);
+        TableUtils.dropTable(connectionSource, Book.class, true);
+        TableUtils.createTableIfNotExists(connectionSource,Book.class);
+//        TableUtils.createTable(connectionSource, Book.class);
 
         // close connection
         connectionSource.close();
