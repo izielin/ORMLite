@@ -12,8 +12,7 @@ public class Account {
     @DatabaseField(canBeNull = false)
     private String password;
 
-    Account() {
-
+    public Account() {
     }
 
     public String getName() {

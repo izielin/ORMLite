@@ -11,34 +11,21 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException, IOException {
-        // this uses h2 but you can change it to match your database
-        String databaseUrl = "jdbc:sqlite:db.sqlite";
-        // create a connection source to our database
-        ConnectionSource connectionSource =
-                new JdbcConnectionSource(databaseUrl);
+        String databaseUrlSqlite = "jdbc:sqlite:sqliteDatabase";
+        String databaseUrlH2 = "jdbc:h2:./H2DataBase";
 
-        // instantiate the DAO to handle Account with String id
-        Dao<Account,String> accountDao =
-                DaoManager.createDao(connectionSource, Account.class);
+        // create single connection
+        ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrlH2, "admin", "admin");
 
-// if you need to create the 'accounts' table make this call
+        Dao<Account, String> accountDao = DaoManager.createDao(connectionSource,Account.class);
         TableUtils.createTable(connectionSource, Account.class);
 
-        // create an instance of Account
-        String name = "Jim Smith";
         Account account = new Account();
-        account.setName(name);
-        account.setPassword("_secret");
-
-// persist the account object to the database
+        account.setName("Jim Halsey Jr.");
+        account.setPassword("_secret_password");
         accountDao.create(account);
 
-        // retrieve the account
-        Account account2 = accountDao.queryForId(name);
-// show its password
-        System.out.println("Account: " + account2.getPassword());
-
-// close the connection source
+        // close connection
         connectionSource.close();
     }
 }
