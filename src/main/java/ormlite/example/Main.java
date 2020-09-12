@@ -48,8 +48,19 @@ public class Main {
         book.setBorrowed(true);
         book.setPrice(34.99);
 
-        Dao<Book, ?> dao = DaoManager.createDao(connectionSource, Book.class);
+        Dao<Book, Integer> dao = DaoManager.createDao(connectionSource, Book.class);
         dao.create(book);
+        System.out.println("Before Update: " + book);
+
+        book.setTitle("Hobbit");
+        dao.update(book);
+        System.out.println("After Update: " + book);
+
+        dao.delete(book);
+        System.out.println("After Delete: " + book);
+
+        book = dao.queryForId(book.getId());
+        System.out.println("After Query: " + book);
 
         // close connection
         connectionSource.close();
