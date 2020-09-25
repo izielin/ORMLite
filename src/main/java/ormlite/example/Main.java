@@ -4,6 +4,9 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -86,17 +89,38 @@ public class Main {
 //        GenericRawResults<String[]> rawResults = dao.queryRaw("SELECT * FROM books");
 //        GenericRawResults<String[]> rawResults = dao.queryRaw("SELECT * FROM books WHERE title = 'Hobbit'");
 //        GenericRawResults<String[]> rawResults = dao.queryRaw("SELECT MIN(price), MAX(price) FROM books ");
-        GenericRawResults<String[]> rawResults = dao.queryRaw("SELECT count(*) FROM books WHERE borrowed = true");
-        List<String[]> result = rawResults.getResults();
-        result.forEach(e->{
-            for(String string : e)
-                System.out.println(string);
-        });
+//        GenericRawResults<String[]> rawResults = dao.queryRaw("SELECT count(*) FROM books WHERE borrowed = true");
+//        List<String[]> result = rawResults.getResults();
+//        result.forEach(e->{
+//            for(String string : e)
+//                System.out.println(string);
+//        });
+//
+//        double maxUnit = dao.queryRawValue("SELECT AVG(price) FROM books");
+//        System.out.println(maxUnit);
 
-        double maxUnit = dao.queryRawValue("SELECT AVG(price) FROM books");
-        System.out.println(maxUnit);
+        QueryBuilder<Book, Integer> queryBuilder = dao.queryBuilder();
+        queryBuilder.where().eq("TITLE", "Hobbit");
+        PreparedQuery<Book> prepare = queryBuilder.prepare();
+        List<Book> result = dao.query(prepare);
 
+        result.forEach(System.out::println);
+
+        List<Book> result2 = dao.query(dao.queryBuilder().where().eq("TITLE", "Lord of the Rings").prepare());
+        result2.forEach(System.out::println);
+
+        queryBuilder.where().eq("AUTHOR", "J.R.R Tolkien").and().ne("TITLE", "Hobbit");
+        PreparedQuery<Book> prepare2 = queryBuilder.prepare();
+        List<Book> result3 = dao.query(prepare2);
+
+        result3.forEach(System.out::println);
         // close connection
+
+        UpdateBuilder<Book, Integer> updateBuilder = dao.updateBuilder();
+        updateBuilder.updateColumnValue("DESCRIPTION", "The tale about small Hobbit and thirteen dwarfs");
+        updateBuilder.where().eq("TITLE", "Hobbit");
+        int booksUpdate = updateBuilder.update();
+        System.out.println(booksUpdate);
         connectionSource.close();
     }
 }
