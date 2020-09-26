@@ -18,7 +18,7 @@ public class Book {
     @DatabaseField(columnName = "TITLE", canBeNull = false)
     private String title;
 
-    @DatabaseField(foreign = true, columnName = "AUTHOR ID")
+    @DatabaseField(foreign = true, columnName = "AUTHOR ID", foreignAutoCreate = true, foreignAutoRefresh = true)
     private Author author; //default column name author_id
 
     @DatabaseField(columnName = "DESCRIPTION", dataType = DataType.LONG_STRING)
@@ -127,13 +127,13 @@ public class Book {
         return "Book{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
                 ", description='" + description + '\'' +
                 ", isbn='" + isbn + '\'' +
                 ", addedDate=" + addedDate +
                 ", releasedDate=" + releasedDate +
                 ", rating='" + rating + '\'' +
                 ", borrowed=" + borrowed +
-                ", author='" + author + '\'' +
                 ", price=" + price +
                 '}';
     }

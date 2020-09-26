@@ -42,6 +42,7 @@ public class Main {
 
         Book book = new Book();
         book.setTitle("Lord of the Rings");
+        book.setAuthor(author);
         book.setDescription(null);
         book.setIsbn("127151");
         book.setAddedDate(new Date());
@@ -55,13 +56,50 @@ public class Main {
         book.setBorrowed(true);
         book.setPrice(34.99);
 
-        authorsDao.create(author);
-        book.setAuthor(author);
         booksDao.create(book);
-        authorsDao.refresh(book.getAuthor());
+        System.out.println("After save in db: " + book);
 
-        System.out.println(book);
-        System.out.println(author);
+        Book bookQuery = booksDao.queryForId(1);
+        System.out.println("After query: " + bookQuery);
+
+        bookQuery.getAuthor().setAuthorFirstName("Author");
+        bookQuery.getAuthor().setAuthorLastName("Unknown");
+        authorsDao.createOrUpdate(bookQuery.getAuthor());
+        bookQuery = booksDao.queryForId(1);
+        System.out.println("After author change: " + bookQuery);
+
+
+        author = authorsDao.queryForId(1);
+        author.getBooks().forEach(e->{
+            e.setTitle("Bogurodzica");
+            try {
+                booksDao.createOrUpdate(e);
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
+        authorsDao.refresh(author);
+        author.getBooks().forEach(e->{
+            System.out.println("Title change to: " + e.getTitle());
+        });
+
+
+        Book book3 = new Book();
+        book3.setTitle("Witcher: Blood of Elves");
+        book3.setDescription("Here description is unnecessary");
+        book3.setIsbn("532251525234");
+        book3.setAddedDate(new Date());
+
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy/MM/dd");
+        String dateInString3 = "2012/11/11";
+        Date date3 = sdf3.parse(dateInString3);
+
+        book3.setReleasedDate(date3);
+        book3.setRating("1");
+        book3.setBorrowed(true);
+        book3.setPrice(33.99);
+
+        author.getBooks().add(book3);
 
         connectionSource.close();
     }
