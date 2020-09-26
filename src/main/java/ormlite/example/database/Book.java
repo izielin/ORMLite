@@ -1,4 +1,4 @@
-package ormlite.example;
+package ormlite.example.database;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -18,6 +18,9 @@ public class Book {
     @DatabaseField(columnName = "TITLE", canBeNull = false)
     private String title;
 
+    @DatabaseField(foreign = true, columnName = "AUTHOR ID")
+    private Author author; //default column name author_id
+
     @DatabaseField(columnName = "DESCRIPTION", dataType = DataType.LONG_STRING)
     private String description;
 
@@ -32,11 +35,9 @@ public class Book {
 
     @DatabaseField(columnName = "RATING", width = 1)
     private String rating;
+
     @DatabaseField(columnName = "BORROWED", defaultValue = "false")
     private boolean borrowed;
-
-    @DatabaseField(columnName = "AUTHOR")
-    private String author;
 
     @DatabaseField(columnName = "PRICE")
     private double price;
@@ -105,11 +106,11 @@ public class Book {
         this.borrowed = borrowed;
     }
 
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 
